@@ -1,5 +1,3 @@
-*.classpath
-*.project
 *.prefs
 *.settings
 bin/**
