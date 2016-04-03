@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class MenuListener implements Listener
 {
+	//what happens if registered plugin was disabled?
 	public static boolean registered = false;
 	public static HashMap<UUID, InventoryMenu> menuMap = new HashMap<>();
 	
