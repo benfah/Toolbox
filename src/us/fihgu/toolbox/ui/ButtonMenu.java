@@ -2,7 +2,6 @@ package us.fihgu.toolbox.ui;
 import org.bukkit.event.inventory.InventoryType;
 import java.util.HashMap;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.entity.Player;
 
 public class ButtonMenu extends InventoryMenu
 {
