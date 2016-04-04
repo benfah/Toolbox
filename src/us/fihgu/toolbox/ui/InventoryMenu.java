@@ -39,6 +39,11 @@ public class InventoryMenu
 		player.openInventory(this.inventory);
 	}
 	
+	/**
+	/* due to the nature of Events<br>
+	/* actions that may interupt other Listeners should be done AFTER the event is handled <br>
+	/* a common way to do that is though a BukkitRunable, and schedule the task on next server tick.
+	/*/
 	public void onClick(InventoryClickEvent event)
 	{
 		if(this.cancelEvent == true)

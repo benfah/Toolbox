@@ -22,9 +22,24 @@ public abstract class Button
 		this.item = item;
 	}
 	
+	public ItemStack getItem()
+	{
+		return this.item;
+	}
+	
+	public void setItem(ItemStack item)
+	{
+		this.item = item;
+	}
+	
 	public Button(Material material, String name, String lore, int amount)
 	{
 		this(material, name, new String[]{lore}, amount);
+	}
+	
+	public void onUpdate()
+	{
+		
 	}
 	
 	public abstract boolean onClick(InventoryClickEvent event);

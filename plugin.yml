@@ -1,0 +1,5 @@
+main: us.fihgu.toolbox.Loader
+name: toolbox
+version: 1.0
+author: fihgu
+description: fihgu's toolbox is a plugin library.
