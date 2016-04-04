@@ -42,6 +42,6 @@ public abstract class Button
 		
 	}
 	
-	public abstract boolean onClick(InventoryClickEvent event);
+	public abstract void onClick(InventoryClickEvent event);
 	
 }

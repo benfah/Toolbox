@@ -3,25 +3,23 @@ import org.bukkit.event.inventory.InventoryType;
 import java.util.HashMap;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class ButtonMenu extends InventoryMenu
+public class StaticButtonMenu extends InventoryMenu implements IButtonMenu
 {
 	protected HashMap<Integer, Button> buttons = new HashMap<>();
 	
-	public ButtonMenu(String title, InventoryType type)
+	public StaticButtonMenu(String title, InventoryType type)
 	{
 		super(title, type);
 	}
 	
-	public ButtonMenu(String title, int rows)
+	/**
+	 * @param rows must be 1~6
+	 */
+	public StaticButtonMenu(String title, int rows)
 	{
 		super(title, rows);
 	}
 	
-	/**
-	/* due to the nature of Events<br>
-	/* actions that may interupt other Listeners should be done AFTER the event is handled <br>
-	/* a common way to do that is though a BukkitRunable, and schedule the task on next server tick.
-	/*/
 	@Override
 	public void onClick(InventoryClickEvent event)
 	{
@@ -34,21 +32,12 @@ public class ButtonMenu extends InventoryMenu
 		}
 	}
 	
-	/**
-	/* sets the button and updates the inventory <br>
-	/* it is prefered to use #setButton(int slot, Button button) if you are setting multiple buttons at once.
-	/*/
 	public void setButtonAndUpdate(int slot, Button button)
 	{
 		this.setButton(slot, button);
-		this.updateList();
+		this.update();
 	}
 	
-	/**
-	/* sets the button to the internal button map <br>
-	/* Note the inventory is not updated so the button is invisible to user until you #updateList() <br>
-	/* button should never be null.
-	/*/
 	public void setButton(int slot, Button button)
 	{
 		if(button == null)
@@ -66,31 +55,21 @@ public class ButtonMenu extends InventoryMenu
 		this.buttons.put(slot, button);
 	}
 	
-	/**
-	/* removes the button on given slot<br>
-	/* Note the inventory is NOT updated, so user will still see the ItemStack until you do #updateList()
-	/*/
+	@Override
 	public void removeButton(int slot)
 	{
 		this.buttons.remove(slot);
 	}
 	
-	/**
-	/* removes button on given slot and #updateList()<br>
-	/* its recommanded to use #removeButton(int slot) then #updateList() when removing multiple buttons
-	/*/
+	@Override
 	public void removeButtonAndUpdate(int slot)
 	{
 		this.removeButton(slot);
-		this.updateList();
-	}
+		this.update();
+	}	
 	
-	
-	
-	/**
-	/* remap the buttons into the inventory.
-	/*/
-	public void updateList()
+	@Override
+	public void update()
 	{
 		if(this.inventory == null)
 		{

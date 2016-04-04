@@ -16,10 +16,18 @@ public class InventoryMenu
 	 /*/
 	public boolean cancelEvent = true;
 	
+	/**
+	 * the number of columns a minecraft chest have.
+	 */
+	public static final int CHEST_COLUMN_COUNT = 9;
 	
+	/**
+	 * @param rows must be 1~6
+	 */
 	public InventoryMenu(String title, int rows)
 	{
-		this.inventory = Bukkit.createInventory(null, rows * 9, title);
+		rows = Math.min(6, Math.max(1, rows));
+		this.inventory = Bukkit.createInventory(null, rows * CHEST_COLUMN_COUNT, title);
 	}
 	
 	public InventoryMenu(String title, InventoryType type)
@@ -28,20 +36,14 @@ public class InventoryMenu
 	}
 	
 	public void show(Player player)
-	{
-		if(MenuListener.registered == false)
-		{
-			System.err.println("MenuListener wasn't registered!");
-			return;
-		}
-		
+	{		
 		MenuListener.menuMap.put(player.getUniqueId(), this);
 		player.openInventory(this.inventory);
 	}
 	
 	/**
 	/* due to the nature of Events<br>
-	/* actions that may interupt other Listeners should be done AFTER the event is handled <br>
+	/* actions that may interrupt other Listeners should be done AFTER the event is handled <br>
 	/* a common way to do that is though a BukkitRunable, and schedule the task on next server tick.
 	/*/
 	public void onClick(InventoryClickEvent event)
