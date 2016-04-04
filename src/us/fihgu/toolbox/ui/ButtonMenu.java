@@ -29,4 +29,9 @@ public class ButtonMenu extends InventoryMenu
 			button.onClick(event);
 		}
 	}
+	
+	public void setButton()
+	{
+		
+	}
 }
