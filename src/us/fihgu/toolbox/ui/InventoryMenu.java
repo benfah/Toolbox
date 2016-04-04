@@ -52,5 +52,10 @@ public class InventoryMenu
 		{
 			event.setCancelled(true);
 		}
+		
+		if(event.getSlot() >= this.inventory.getSize())
+		{
+			return;
+		}
 	}
 }

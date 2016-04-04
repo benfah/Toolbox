@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-
+/**
+/* the ListButtonMenu contains a row of navigation bar<br>
+/* while all other rows are used to list items.
+/*/
 public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 {
 	protected ArrayList<Button> buttons = new ArrayList<Button>();
-	
+	protected Button[] navigation = new Button[CHEST_COLUMN_COUNT];
 	/**
 	 * the number of available slots for this list. <br>
 	 * this needs to be updated if the internal inventory of this menu changes.
@@ -27,7 +30,8 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 	public ListButtonMenu(String title, int rows)
 	{
 		super(title, Math.max(rows, 2));
-		updateSlotCount();
+		this.setupNavigation();
+		this.updateSlotCount();
 	}
 	
 	protected void updateSlotCount()
@@ -128,15 +132,32 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 	@Override
 	public void update()
 	{
+		this.inventory.clear();
+		
+		//navigation:
+		for(int i = 0; i < this.navigation.length; i++)
+		{
+			Button button = this.navigation[i];
+			if(button != null)
+			{
+				button.onUpdate();
+				this.inventory.setItem(i, button.getItem());
+			}
+		}
+		
+		//listed items:
 		int startIndex = this.slotCount * this.page;
 		int endIndex = this.slotCount * (this.page + 1);
 		
 		for(int index = startIndex; index < endIndex && index < buttons.size(); index++)
 		{
 			Button button = buttons.get(index);
-			button.onUpdate();
-			int slot = index - startIndex + CHEST_COLUMN_COUNT;
-			this.inventory.setItem(slot, button.getItem());
+			if(button != null)
+			{
+				button.onUpdate();
+				int slot = index - startIndex + CHEST_COLUMN_COUNT;
+				this.inventory.setItem(slot, button.getItem());
+			}
 		}
 	}
 	
@@ -163,9 +184,11 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 			}
 		};
 		
-		Button pageInfo = new PageInfoButton(this);
+		Button pageInfoBtn = new PageInfoButton(this);
 		
-		this.
+		this.navigation[6] = lastPageBtn;
+		this.navigation[7] = pageInfoBtn;
+		this.navigation[9] = nextPageBtn;
 	}
 	
 	@Override
@@ -173,18 +196,30 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 	{
 		super.onClick(event);
 		
-		int index = event.getSlot() + (this.page * this.slotCount);
-		
-		if(index >= this.buttons.size())
+		int slot = event.getSlot();
+		if(slot < CHEST_COLUMN_COUNT)
 		{
-			return;
+			Button button = this.navigation[slot];
+			if(button != null)
+			{
+				button.onClick(event);
+			}
 		}
-		
-		Button button = this.buttons.get(index);
-		
-		if(button != null)
+		else
 		{
-			button.onClick(event);
+			int index = slot - CHEST_COLUMN_COUNT + (this.page * this.slotCount);
+
+			if(index >= this.buttons.size())
+			{
+				return;
+			}
+
+			Button button = this.buttons.get(index);
+
+			if(button != null)
+			{
+				button.onClick(event);
+			}
 		}
 	}
 }
