@@ -30,13 +30,14 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 	public ListButtonMenu(String title, int rows)
 	{
 		super(title, Math.max(rows, 2));
-		this.setupNavigation();
 		this.updateSlotCount();
+		this.setupNavigation();
+		this.update();
 	}
 	
 	protected void updateSlotCount()
 	{
-		this.slotCount = (this.inventory.getSize() - 1) * CHEST_COLUMN_COUNT;
+		this.slotCount = this.inventory.getSize() - CHEST_COLUMN_COUNT;
 	}
 	
 	public int getPage()
@@ -46,19 +47,21 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 	
 	public int getMaxPage()
 	{
-		return (int) Math.ceil(this.buttons.size() / (double)slotCount) - 1;
+		return (int) (Math.ceil(this.buttons.size() / ((double)slotCount)));
 	}
 	
 	public void nextPage()
 	{
 		this.page++;
 		checkPageRange();
+		this.update();
 	}
 	
 	public void lastPage()
 	{
 		this.page--;
 		checkPageRange();
+		this.update();
 	}
 	
 	private void checkPageRange()
@@ -68,10 +71,10 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 		
 		if(this.page < minPage)
 		{
-			this.page = maxPage;
+			this.page = Math.max(maxPage - 1, minPage);
 		}
 		
-		if(this.page > maxPage)
+		if(this.page >= maxPage)
 		{
 			this.page = minPage;
 		}
@@ -156,6 +159,12 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 			{
 				button.onUpdate();
 				int slot = index - startIndex + CHEST_COLUMN_COUNT;
+				
+				if(slot >= this.inventory.getSize())
+				{
+					break;
+				}
+				
 				this.inventory.setItem(slot, button.getItem());
 			}
 		}
@@ -188,7 +197,7 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 		
 		this.navigation[6] = lastPageBtn;
 		this.navigation[7] = pageInfoBtn;
-		this.navigation[9] = nextPageBtn;
+		this.navigation[8] = nextPageBtn;
 	}
 	
 	@Override
@@ -197,7 +206,12 @@ public class ListButtonMenu extends InventoryMenu implements IButtonMenu
 		super.onClick(event);
 		
 		int slot = event.getSlot();
-		if(slot < CHEST_COLUMN_COUNT)
+		
+		if(slot < 0)
+		{
+			return;
+		}
+		else if(slot < CHEST_COLUMN_COUNT)
 		{
 			Button button = this.navigation[slot];
 			if(button != null)

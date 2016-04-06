@@ -1,9 +1,12 @@
 package us.fihgu.toolbox.ui;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
+
+import us.fihgu.toolbox.Loader;
 
 
 public class InventoryMenu
@@ -35,10 +38,20 @@ public class InventoryMenu
 		this.inventory = Bukkit.createInventory(null, type, title);
 	}
 	
-	public void show(Player player)
-	{		
-		MenuListener.menuMap.put(player.getUniqueId(), this);
-		player.openInventory(this.inventory);
+	public void show(HumanEntity player)
+	{
+		
+		BukkitRunnable task = new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				player.openInventory(inventory);
+				MenuListener.menuMap.put(player.getUniqueId(), InventoryMenu.this);
+			}
+		};
+		
+		task.runTaskLater(Loader.instance, 1);
 	}
 	
 	/**
@@ -52,10 +65,19 @@ public class InventoryMenu
 		{
 			event.setCancelled(true);
 		}
-		
-		if(event.getSlot() >= this.inventory.getSize())
+	}
+	
+	public void closeMenu(HumanEntity player)
+	{
+		BukkitRunnable task = new BukkitRunnable()
 		{
-			return;
-		}
+			@Override
+			public void run()
+			{
+				player.closeInventory();
+			}
+		};
+		
+		task.runTaskLater(Loader.instance, 1);
 	}
 }

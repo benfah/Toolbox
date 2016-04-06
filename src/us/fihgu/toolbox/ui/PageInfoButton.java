@@ -29,7 +29,15 @@ public class PageInfoButton extends Button
 	@Override
 	public void onUpdate()
 	{
-		String name = "Page: " + menu.getPage() + "/" + menu.getMaxPage();
+		int maxPage = menu.getMaxPage();
+		int page = menu.getPage();
+		
+		if(maxPage > 0)
+		{
+			page++;
+		}
+		
+		String name = "Page: " + page + "/" + maxPage;
 		ItemUtils.setDisplayName(this.item, name);
 	}
 }
