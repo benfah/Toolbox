@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import us.fihgu.toolbox.json.JsonObject;
+
 /**
  * this class provides ItemStack/Item related shortcuts.
  */
@@ -163,5 +165,15 @@ public class ItemUtils
 			ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 			item.setItemMeta(meta);
 		}
+	}
+	
+	/**
+	 * turn it into a Json string with hover Event
+	 */
+	public static JsonObject toJsonDisplayString(ItemStack item)
+	{
+		
+		
+		return null;
 	}
 }
