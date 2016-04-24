@@ -1,7 +1,7 @@
 package us.fihgu.toolbox.json.text;
 
 
-public enum ChatStyle
+public enum JsonChatStyle
 {
 	bold, italic, underlined, strikethrough, obfuscated;
 }

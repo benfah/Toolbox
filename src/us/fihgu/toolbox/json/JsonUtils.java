@@ -3,8 +3,12 @@ package us.fihgu.toolbox.json;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.google.gson.Gson;
+
 public class JsonUtils
 {
+	public static Gson gson = new Gson();
+	
 	/**
 	 * escape all quotation mark in a string<br>
 	 * used when parsing a json String as normal string.
@@ -32,6 +36,7 @@ public class JsonUtils
 	 */
 	public static void sendJsonMessage(Player player, JsonObject jObj)
 	{
+		//TODO: use packets instead.
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getName() + " " + jObj.toString());
 	}
 	
