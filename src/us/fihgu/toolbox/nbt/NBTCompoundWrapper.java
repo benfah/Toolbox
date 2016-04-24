@@ -26,54 +26,54 @@ public class NBTCompoundWrapper extends NBTBaseWrapper
 	
 	public void set(String key, NBTBaseWrapper nbtBase)
 	{
-		this.invoke("set", void.class, key, nbtBase.getInstance());
+		this.invoke("set", void.class, new Class<?>[]{String.class, getWrappedClass(NBTBaseWrapper.class)}, new Object[]{key, nbtBase.getInstance()});
 	}
 	public void setByte(String key, byte b)
 	{
-		this.invoke("setByte", void.class, key, b);
+		this.invoke("setByte", void.class, new Class<?>[]{String.class, byte.class}, new Object[]{key, b});
 	}
 	public void setShort(String key, short s)
 	{
-		this.invoke("setShort", void.class, key, s);
+		this.invoke("setShort", void.class, new Class<?>[]{String.class, short.class}, new Object[]{key, s});
 	}
 	public void setInt(String key, int i)
 	{
-		this.invoke("setInt", void.class, key, i);
+		this.invoke("setInt", void.class, new Class<?>[]{String.class, int.class}, new Object[]{key, i});
 	}
 	public void setLong(String key, long l)
 	{
-		this.invoke("setLong", void.class, key, l);
+		this.invoke("setLong", void.class, new Class<?>[]{String.class, long.class}, new Object[]{key, l});
 	}
 	public void setFloat(String key, float f)
 	{
-		this.invoke("setFloat", void.class, key, f);
+		this.invoke("setFloat", void.class, new Class<?>[]{String.class, float.class}, new Object[]{key, f});
 	}
 	public void setDouble(String key, double d)
 	{
-		this.invoke("setDouble", void.class, key, d);
+		this.invoke("setDouble", void.class, new Class<?>[]{String.class, double.class}, new Object[]{key, d});
 	}
 	public void setString(String key, String text)
 	{
-		this.invoke("setString", void.class, key, text);
+		this.invoke("setString", void.class, new Class<?>[]{String.class, String.class}, new Object[]{key, text});
 	}
 	public void setByteArray(String key, byte[] bytes)
 	{
-		this.invoke("setByteArray", void.class, key, bytes);
+		this.invoke("setByteArray", void.class, new Class<?>[]{String.class, byte[].class}, new Object[]{key, bytes});
 	}
 	public void setIntArray(String key, int[] ints)
 	{
-		this.invoke("setIntArray", void.class, key, ints);
+		this.invoke("setIntArray", void.class, new Class<?>[]{String.class, int[].class}, new Object[]{key, ints});
 	}
 	public void setBoolean(String key, boolean bool)
 	{
-		this.invoke("setBoolean", void.class, key, bool);
+		this.invoke("setBoolean", void.class, new Class<?>[]{String.class, boolean.class}, new Object[]{key, bool});
 	}
 	
 	
 	
 	public NBTBaseWrapper get(String key)
 	{
-		Object result = this.invoke("get", getWrappedClass(NBTBaseWrapper.class), key);
+		Object result = this.invoke("get", getWrappedClass(NBTBaseWrapper.class), new Class<?>[]{String.class}, new Object[]{key});
 		if(result != null)
 		{
 			return new NBTBaseWrapper(result);
@@ -85,7 +85,7 @@ public class NBTCompoundWrapper extends NBTBaseWrapper
 	}
 	public NBTCompoundWrapper getCompound(String key)
 	{
-		Object result = this.invoke("getCompound", getWrappedClass(NBTCompoundWrapper.class), key);
+		Object result = this.invoke("getCompound", getWrappedClass(NBTCompoundWrapper.class), new Class<?>[]{String.class}, new Object[]{key});
 		if(result != null)
 		{
 			return new NBTCompoundWrapper(result);
@@ -97,7 +97,7 @@ public class NBTCompoundWrapper extends NBTBaseWrapper
 	}
 	public NBTListWrapper getList(String key, int typeId)
 	{
-		Object result = this.invoke("getList", getWrappedClass(NBTListWrapper.class), key, typeId);
+		Object result = this.invoke("getList", getWrappedClass(NBTListWrapper.class), new Class<?>[]{String.class, int.class}, new Object[]{key, typeId});
 		if(result != null)
 		{
 			return new NBTListWrapper(result);
@@ -109,57 +109,59 @@ public class NBTCompoundWrapper extends NBTBaseWrapper
 	}
 	public byte getByte(String key)
 	{
-		return this.invoke("getByte", byte.class, key);
+		return this.invoke("getByte", byte.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public short getShort(String key)
 	{
-		return this.invoke("getShort", short.class, key);
+		return this.invoke("getShort", short.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public int getInt(String key)
 	{
-		return this.invoke("getInt", int.class, key);
+		return this.invoke("getInt", int.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public long getLong(String key)
 	{
-		return this.invoke("getLong", long.class, key);
+		return this.invoke("getLong", long.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public float getFloat(String key)
 	{
-		return this.invoke("getFloat", float.class, key);
+		return this.invoke("getFloat", float.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public double getDouble(String key)
 	{
-		return this.invoke("getDouble", double.class, key);
+		return this.invoke("getDouble", double.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public String getString(String key)
 	{
-		return this.invoke("getString", String.class, key);
+		return this.invoke("getString", String.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public byte[] getByteArray(String key)
 	{
-		return this.invoke("getByteArray", byte[].class, key);
+		return this.invoke("getByteArray", byte[].class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public int[] getIntArray(String key)
 	{
-		return this.invoke("getIntArray", int[].class, key);
+		return this.invoke("getIntArray", int[].class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public boolean getBoolean(String key)
 	{
-		return this.invoke("getBoolean", boolean.class, key);
+		return this.invoke("getBoolean", boolean.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public void remove(String key)
 	{
-		this.invoke("remove", void.class, key);
+		this.invoke("remove", void.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	
 	public boolean hasKey(String key)
 	{
-		return this.invoke("hasKey", boolean.class, key);
+		return this.invoke("hasKey", boolean.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
+	
 	public boolean hasKeyOfType(String key, NBTType typeId)
 	{
-		return this.invoke("hasKeyOfType", boolean.class, key, typeId.getId());
+		return this.invoke("hasKeyOfType", boolean.class, new Class<?>[]{String.class, int.class}, new Object[]{key, typeId.getId()});
 	}
+	
 	public boolean isEmpty()
 	{
 		return this.invoke("isEmpty", boolean.class);

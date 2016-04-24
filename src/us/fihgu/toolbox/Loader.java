@@ -7,7 +7,7 @@ public class Loader extends JavaPlugin
 {
 	public static Loader instance = null;
 	
-	public static boolean debug = true;
+	public static boolean debug = false;
 	
 	@Override
 	public void onEnable()

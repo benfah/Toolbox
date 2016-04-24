@@ -8,7 +8,12 @@ import us.fihgu.toolbox.reflection.ReflectionUtils;
 
 public class NBTUtils
 {
-	public static NBTCompoundWrapper getNBTCompound(ItemStack item)
+	/**
+	 * gets the NBT compound of given itemstack.<br>
+	 * this compound contains all meta info of an itemstack<br>
+	 * but it does not contain item type or damage, amount.<br>
+	 */
+	public static NBTCompoundWrapper getNBTTag(ItemStack item)
 	{
 		Class<?> craftItemStackClass = ReflectionUtils.getCraftBukkitClass("inventory.CraftItemStack");
 		Class<?> nmsItemStackClass = ReflectionUtils.getNMSClass("ItemStack");

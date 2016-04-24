@@ -25,12 +25,12 @@ public class NBTListWrapper extends NBTBaseWrapper
 	
 	public void add(NBTBaseWrapper base)
 	{
-		this.invoke("add", void.class, base.getInstance());
+		this.invoke("add", void.class, new Class<?>[]{getWrappedClass(NBTBaseWrapper.class)}, new Object[]{base.getInstance()});
 	}
 	
 	public NBTBaseWrapper remove(int index)
 	{		
-		Object result = this.invoke("remove", getWrappedClass(NBTBaseWrapper.class), index);
+		Object result = this.invoke("remove", getWrappedClass(NBTBaseWrapper.class), new Class<?>[]{int.class}, new Object[]{index});
 		
 		if(result != null)
 		{
@@ -49,7 +49,7 @@ public class NBTListWrapper extends NBTBaseWrapper
 	
 	public NBTCompoundWrapper get(int index)
 	{
-		Object result = this.invoke("get", getWrappedClass(NBTCompoundWrapper.class), index);
+		Object result = this.invoke("get", getWrappedClass(NBTCompoundWrapper.class), new Class<?>[]{int.class}, new Object[]{index});
 		
 		if(result != null)
 		{
@@ -63,7 +63,7 @@ public class NBTListWrapper extends NBTBaseWrapper
 	
 	public String getString(int index)
 	{
-		return this.invoke("getString", String.class, index);
+		return this.invoke("getString", String.class, new Class<?>[]{int.class}, new Object[]{index});
 	}
 	
 	public int size()

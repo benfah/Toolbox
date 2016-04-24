@@ -1,7 +1,6 @@
 package us.fihgu.toolbox.reflection;
 
 import java.lang.reflect.Method;
-import java.util.LinkedList;
 
 /**
  * This class wraps over another class though reflection<br>
@@ -68,19 +67,14 @@ public class WrapperBase
 	 * invoke a method from the wrapped class.<br>
 	 * @param methodName the name of this method
 	 * @param returnType if null is used, its considered same as void.class.
+	 * @param argsClass argument Class types from the class you are trying to invoke.
 	 * @param args arguments of the method, use {@link #invoke(String, Class)} if there is no argument.
 	 */
-	public <T> T invoke(String methodName, Class<T> returnType, Object... args)
-	{
-		LinkedList<Class<?>> argsClass = new LinkedList<Class<?>>();
-		for(Object arg : args)
-		{
-			argsClass.add(arg.getClass());
-		}
-		
+	public <T> T invoke(String methodName, Class<T> returnType, Class<?>[] argsClass, Object[] args)
+	{		
 		try
 		{
-			Method method = this.getWrappedClass().getMethod(methodName, argsClass.toArray(new Class<?>[]{}));
+			Method method = this.getWrappedClass().getMethod(methodName, argsClass);
 			Object result = method.invoke(this.getInstance(), args);
 			
 			if(returnType != null && returnType != void.class)
@@ -101,7 +95,7 @@ public class WrapperBase
 	 */
 	public <T> T invoke(String methodName, Class<T> returnType)
 	{
-		return this.invoke(methodName, returnType, new Object[]{});
+		return this.invoke(methodName, returnType, new Class<?>[]{}, new Object[]{});
 	}
 
 	public Object getInstance()
