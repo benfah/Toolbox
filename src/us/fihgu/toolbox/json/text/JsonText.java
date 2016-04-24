@@ -4,6 +4,12 @@ import us.fihgu.toolbox.json.JsonBase;
 import us.fihgu.toolbox.json.event.JsonClickEvent;
 import us.fihgu.toolbox.json.event.JsonHoverEvent;
 
+/**
+ * can be used with "/tellraw" command <br>
+ * Or you can send it to a player with {@link us.fihgu.toolbox.packet.PacketUtils#sendJsonMessage(org.bukkit.entity.Player, JsonText) PacketUtils.sendJsonMessage(Player, JsonText)}
+ * @author fihgu
+ *
+ */
 public class JsonText extends JsonBase
 {
 	public String text;

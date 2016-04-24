@@ -168,6 +168,9 @@ public class ItemUtils
 		}
 	}
 	
+	/**
+	 * parse the item into a NBTCompound which can be stored or used to display the item in a hoverEvent enabled {@link us.fihgu.toolbox.json.text.JsonText JsonText}.
+	 */
 	@SuppressWarnings("deprecation")
 	public static NBTCompoundWrapper toNBTCompoound(ItemStack item)
 	{

@@ -10,10 +10,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import us.fihgu.toolbox.item.ItemUtils;
 import us.fihgu.toolbox.json.event.HoverEventAction;
 import us.fihgu.toolbox.json.event.JsonHoverEvent;
-import us.fihgu.toolbox.json.packet.PacketUtils;
 import us.fihgu.toolbox.json.text.JsonText;
 import us.fihgu.toolbox.json.text.JsonTextBuilder;
 import us.fihgu.toolbox.nbt.NBTCompoundWrapper;
+import us.fihgu.toolbox.packet.PacketUtils;
 
 public class Test implements Listener
 {

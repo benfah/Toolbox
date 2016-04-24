@@ -1,4 +1,4 @@
-package us.fihgu.toolbox.json.packet;
+package us.fihgu.toolbox.packet;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
