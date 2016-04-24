@@ -12,6 +12,7 @@ import us.fihgu.toolbox.json.event.HoverEventAction;
 import us.fihgu.toolbox.json.event.JsonHoverEvent;
 import us.fihgu.toolbox.json.packet.PacketUtils;
 import us.fihgu.toolbox.json.text.JsonText;
+import us.fihgu.toolbox.json.text.JsonTextBuilder;
 import us.fihgu.toolbox.nbt.NBTCompoundWrapper;
 
 public class Test implements Listener
@@ -41,14 +42,15 @@ public class Test implements Listener
 			String jsonMessage = text.toString();
 			System.out.println(jsonMessage);
 			
-			JsonText pre = new JsonText("this is an");
-			pre.extra = new Object[2];
-			pre.extra[0] = text;
-			
+			JsonText pre = new JsonText("this is an ");
 			JsonText post = new JsonText(", how do you like it?");
-			pre.extra[1] = post;
 			
-			PacketUtils.sendJsonMessage(player, pre);
+			JsonTextBuilder builder = new JsonTextBuilder();
+			builder.append(pre);
+			builder.append(text);
+			builder.append(post);
+			
+			PacketUtils.sendJsonMessage(player, builder.toJsonText());
 			
 			event.setCancelled(true);
 		}
