@@ -7,6 +7,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import us.fihgu.toolbox.Loader;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 
 public class InventoryMenu
@@ -61,10 +62,12 @@ public class InventoryMenu
 	/*/
 	public void onClick(InventoryClickEvent event)
 	{
-		if(this.cancelEvent == true)
-		{
-			event.setCancelled(true);
-		}
+		event.setCancelled(this.cancelEvent);
+	}
+	
+	public void onDrag(InventoryDragEvent event)
+	{
+		event.setCancelled(this.cancelEvent);
 	}
 	
 	public void closeMenu(HumanEntity player)
