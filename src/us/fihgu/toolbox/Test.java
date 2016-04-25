@@ -7,13 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import us.fihgu.toolbox.item.ItemUtils;
-import us.fihgu.toolbox.json.event.HoverEventAction;
-import us.fihgu.toolbox.json.event.JsonHoverEvent;
-import us.fihgu.toolbox.json.text.JsonText;
-import us.fihgu.toolbox.json.text.JsonTextBuilder;
-import us.fihgu.toolbox.nbt.NBTCompoundWrapper;
-import us.fihgu.toolbox.packet.PacketUtils;
+import us.fihgu.toolbox.ui.anvil.AnvilMenu;
 
 public class Test implements Listener
 {
@@ -28,29 +22,11 @@ public class Test implements Listener
 		if(parts.length > 0 && parts[0].equalsIgnoreCase("/test"))
 		{
 			count++;
-			
 			//String args[] = Arrays.asList(parts).subList(Math.min(1, parts.length - 1), parts.length - 1).toArray(new String[]{});
 			player.sendMessage("The test command has been used " + count + " times.");
-			//System.out.println(NBTUtils.getNBTCompound(player.getItemInHand()));
 			
-			@SuppressWarnings("deprecation")
-			NBTCompoundWrapper compound = ItemUtils.toNBTCompoound(player.getItemInHand());
-			
-			JsonText text = new JsonText("[item]");
-			text.hoverEvent = new JsonHoverEvent(HoverEventAction.show_item, compound.toString());
-			text.strikethrough = true;
-			String jsonMessage = text.toString();
-			System.out.println(jsonMessage);
-			
-			JsonText pre = new JsonText("this is an ");
-			JsonText post = new JsonText(", how do you like it?");
-			
-			JsonTextBuilder builder = new JsonTextBuilder();
-			builder.append(pre);
-			builder.append(text);
-			builder.append(post);
-			
-			PacketUtils.sendJsonMessage(player, builder.toJsonText());
+			AnvilMenu menu = new AnvilMenu();
+			menu.show(player);
 			
 			event.setCancelled(true);
 		}

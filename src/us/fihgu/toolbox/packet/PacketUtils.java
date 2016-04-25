@@ -3,6 +3,7 @@ package us.fihgu.toolbox.packet;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import us.fihgu.toolbox.json.text.JsonText;
@@ -31,6 +32,14 @@ public class PacketUtils
 		catch (Exception e)
 		{
 			e.printStackTrace();
+		}
+	}
+	
+	public static void broadcastJsonMessage(JsonText message)
+	{
+		for(Player player : Bukkit.getOnlinePlayers())
+		{
+			sendJsonMessage(player, message);
 		}
 	}
 }

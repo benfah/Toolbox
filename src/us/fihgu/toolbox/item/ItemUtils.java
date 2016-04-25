@@ -19,6 +19,12 @@ import us.fihgu.toolbox.nbt.NBTUtils;
  */
 public class ItemUtils
 {
+
+	public static boolean notNullorAir(ItemStack item)
+	{
+		return item != null && item.getType() != Material.AIR;
+	}
+	
 	/**
 	 * create a player skull of given player
 	 */
@@ -166,6 +172,20 @@ public class ItemUtils
 			ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 			item.setItemMeta(meta);
 		}
+	}
+	
+	public static String getVisibleName(ItemStack item)
+	{
+		if(item.hasItemMeta())
+		{
+			ItemMeta meta = item.getItemMeta();
+			if(meta.hasDisplayName())
+			{
+				return meta.getDisplayName();
+			}
+		}
+		
+		return item.getType().toString().toLowerCase();
 	}
 	
 	/**
