@@ -19,6 +19,12 @@ import us.fihgu.toolbox.nbt.NBTUtils;
  */
 public class ItemUtils
 {
+
+	public static boolean notNullorAir(ItemStack item)
+	{
+		return item != null && item.getType() != Material.AIR;
+	}
+	
 	/**
 	 * create a player skull of given player
 	 */

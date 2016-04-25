@@ -22,7 +22,12 @@ public class MenuListener implements Listener
 	public void onCloseInventory(InventoryCloseEvent event)
 	{
 		UUID id = event.getPlayer().getUniqueId();
-		menuMap.remove(id);
+		InventoryMenu menu = menuMap.get(id);
+		if(menu != null)
+		{
+			menu.onClose(event);
+			menuMap.remove(id);
+		}
 	}
 	
 	@EventHandler

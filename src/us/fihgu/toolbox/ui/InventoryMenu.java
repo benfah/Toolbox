@@ -8,6 +8,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import us.fihgu.toolbox.Loader;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.inventory.ItemStack;
+import us.fihgu.toolbox.item.ItemUtils;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 
 public class InventoryMenu
@@ -70,6 +75,11 @@ public class InventoryMenu
 		event.setCancelled(this.cancelEvent);
 	}
 	
+	public void onClose(InventoryCloseEvent event)
+	{
+		
+	}
+	
 	public void closeMenu(HumanEntity player)
 	{
 		BukkitRunnable task = new BukkitRunnable()
@@ -82,5 +92,19 @@ public class InventoryMenu
 		};
 		
 		task.runTaskLater(Loader.instance, 1);
+	}
+	
+	public void dropItems(Location location)
+	{
+		World world = location.getWorld();
+		for(int i = 0; i < this.inventory.getSize(); i++)
+		{
+			ItemStack item = this.inventory.getItem(i);
+			if(ItemUtils.notNullorAir(item))
+			{
+				this.inventory.remove(i);
+				world.dropItemNaturally(location, item);
+			}
+		}
 	}
 }
