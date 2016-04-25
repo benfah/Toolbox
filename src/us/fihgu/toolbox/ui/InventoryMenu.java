@@ -102,7 +102,7 @@ public class InventoryMenu
 			ItemStack item = this.inventory.getItem(i);
 			if(ItemUtils.notNullorAir(item))
 			{
-				this.inventory.remove(i);
+				this.inventory.setItem(i, null);
 				world.dropItemNaturally(location, item);
 			}
 		}

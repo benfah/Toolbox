@@ -174,6 +174,20 @@ public class ItemUtils
 		}
 	}
 	
+	public static String getVisibleName(ItemStack item)
+	{
+		if(item.hasItemMeta())
+		{
+			ItemMeta meta = item.getItemMeta();
+			if(meta.hasDisplayName())
+			{
+				return meta.getDisplayName();
+			}
+		}
+		
+		return item.getType().toString().toLowerCase();
+	}
+	
 	/**
 	 * parse the item into a NBTCompound which can be stored or used to display the item in a hoverEvent enabled {@link us.fihgu.toolbox.json.text.JsonText JsonText}.
 	 */

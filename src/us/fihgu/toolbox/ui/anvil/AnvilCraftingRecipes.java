@@ -1,6 +1,5 @@
 package us.fihgu.toolbox.ui.anvil;
 import org.bukkit.inventory.ItemStack;
-import java.util.LinkedList;
 
 public interface AnvilCraftingRecipes
 {
