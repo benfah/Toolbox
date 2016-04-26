@@ -7,8 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import us.fihgu.toolbox.ui.anvil.AnvilMenu;
-
 public class Test implements Listener
 {
 	public static int count = 0;
@@ -25,8 +23,6 @@ public class Test implements Listener
 			//String args[] = Arrays.asList(parts).subList(Math.min(1, parts.length - 1), parts.length - 1).toArray(new String[]{});
 			player.sendMessage("The test command has been used " + count + " times.");
 			
-			AnvilMenu menu = new AnvilMenu();
-			menu.show(player);
 			
 			event.setCancelled(true);
 		}
