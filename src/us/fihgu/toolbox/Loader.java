@@ -14,6 +14,7 @@ public class Loader extends JavaPlugin
 	{
 		Loader.instance = this;
 		new MenuListener().register(this);
+		
 		System.out.print("fihgu's Toolbox is loaded.");
 		
 		if(debug)
