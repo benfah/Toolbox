@@ -1,23 +1,21 @@
 package us.fihgu.toolbox;
 
-import java.io.File;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import us.fihgu.toolbox.world.MapManager;
+import us.fihgu.toolbox.http.HTTPServer;
+
 
 public class Test implements Listener
 {
 	public static int count = 0;
-	
-	private File mapFolder = new File("./maps/TestMap");
 	
 	@EventHandler
 	public void onCommand(PlayerCommandPreprocessEvent event)
@@ -29,29 +27,10 @@ public class Test implements Listener
 		{
 			count++;
 			String args[] = Arrays.asList(parts).subList(Math.min(1, parts.length - 1), parts.length).toArray(new String[]{});
-			player.sendMessage("The test command has been used " + count + " times.");
+			player.sendMessage("The test command has been used " + count + " times, args[" + args.length + "]");
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
-			if(args.length == 1)
-			{
-				if(args[0].equalsIgnoreCase("load"))
-				{
-					World world = MapManager.createWorld("testWorld", mapFolder);
-					player.teleport(world.getSpawnLocation());
-				}
-				else if(args[0].equalsIgnoreCase("delete"))
-				{
-					MapManager.deleteWorld("testWorld", null);
-				}
-				else if(args[0].equalsIgnoreCase("save"))
-				{
-					MapManager.saveMap(player.getWorld(), mapFolder);
-				}
-				else if(args[0].equalsIgnoreCase("unload"))
-				{
-					MapManager.unloadWorld(Bukkit.getWorld("testWorld"), null);
-				}
-			}
-			
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			event.setCancelled(true);
 		}
 	}
@@ -59,5 +38,12 @@ public class Test implements Listener
 	public void register(JavaPlugin plugin)
 	{
 		Bukkit.getPluginManager().registerEvents(this, plugin);
+	}
+	
+	public static void main(String[] args)
+	{
+		HTTPServer server = new HTTPServer(new InetSocketAddress("localhost", 80));
+		server.startServer();
+		//server.stopServer();
 	}
 }
