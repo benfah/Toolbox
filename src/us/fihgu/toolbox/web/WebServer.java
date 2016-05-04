@@ -15,7 +15,7 @@ public abstract class WebServer
 	protected boolean isRunning = false;
 	protected InetSocketAddress address;
 	protected ServerSocketChannel serverChannel;
-	protected SelectorThread<?> acceptSelectorThread;
+	protected SelectorThread acceptSelectorThread;
 	protected CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
 	
 	public WebServer(InetSocketAddress address)
@@ -29,7 +29,7 @@ public abstract class WebServer
 		serverChannel.bind(address, address.getPort());
 		serverChannel.configureBlocking(false);
 		
-		acceptSelectorThread = new SelectorThread<>(this.getAcceptHandler());
+		acceptSelectorThread = new SelectorThread(this.getAcceptHandler());
 		acceptSelectorThread.register(this.serverChannel);
 		acceptSelectorThread.start();
 	}
@@ -98,6 +98,19 @@ public abstract class WebServer
 		}
 		
 		this.isRunning = false;
+	}
+	
+	public void onTimeOut(SelectionKey selectionKey)
+	{
+		selectionKey.cancel();
+		try
+		{
+			selectionKey.channel().close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean isRunning()

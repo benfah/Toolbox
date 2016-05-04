@@ -1,11 +1,15 @@
 package us.fihgu.toolbox.http;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.CoderResult;
+import java.util.Calendar;
 
 import us.fihgu.toolbox.web.SelectionHandler;
 
@@ -24,6 +28,9 @@ public class HTTPReadHandler implements SelectionHandler
 	{
 		if (selectionKey.isReadable())
 		{
+			//refresh timer.
+			server.timer.putTimer(selectionKey, Calendar.getInstance().getTimeInMillis() + server.timeOut);
+			
 			HTTPRequest request = (HTTPRequest) selectionKey.attachment();
 			SocketChannel channel = (SocketChannel) selectionKey.channel();
 			try
@@ -39,11 +46,11 @@ public class HTTPReadHandler implements SelectionHandler
 			}
 			catch (IOException e)
 			{
-				if (server.info)
-				{
-					System.out.println("disconnect: " + channel.socket().getRemoteSocketAddress());
-				}
 				this.closeChannel(selectionKey);
+				if(server.debug)
+				{
+					e.printStackTrace();
+				}
 			}
 			catch (BadRequestException e)
 			{
@@ -101,7 +108,7 @@ public class HTTPReadHandler implements SelectionHandler
 		}		
 	}
 	
-	private void processLine(SelectionKey selectionKey, HTTPRequest request, String line) throws BadRequestException
+	private void processLine(SelectionKey selectionKey, HTTPRequest request, String line) throws BadRequestException, IOException
 	{
 		if(request.method == null)
 		{			
@@ -204,14 +211,58 @@ public class HTTPReadHandler implements SelectionHandler
 		request.lineBuilder.append(charBuffer.toString());
 	}
 	
-	protected void onComplete(HTTPRequest request, SelectionKey selectionKey)
+	protected void onComplete(HTTPRequest request, SelectionKey selectionKey) throws IOException
 	{
+		server.timer.removeTimer(selectionKey);
+		
 		selectionKey.cancel();
 		if(server.debug)
 		{
+			System.out.println("");
+			System.out.println("Request recived from: " + ((SocketChannel)selectionKey.channel()).getRemoteAddress());
 			System.out.println(request);
+			System.out.println("");
 		}
 		
+		String host = "unknown";
+		
+		if(request.version.equals("HTTP/1.1"))
+		{
+			String temp = request.headers.get("host");
+			if(temp != null)
+			{
+				host = temp;
+			}
+		}
+		
+		URL path = new URL("http://" + host + request.path);
+		HTTPContext context = server.getContext(path);
+		ResponseCode code = ResponseCode.OK;
+		
+		if(context == null)
+		{
+			code = ResponseCode.NOT_FOUND;
+		}
+		
+		if(request.method == HTTPRequestMethod.HEAD)
+		{
+			context = null;
+		}
+		
+		this.sendResponse(selectionKey, new HTTPResponse(code, context));
+	}
+	
+	private void sendResponse(SelectionKey selectionKey, HTTPResponse response)
+	{
+		try
+		{
+			server.writePool.getLightest().register(selectionKey.channel(), response);
+		}
+		catch (ClosedChannelException e)
+		{
+			this.closeChannel(selectionKey);
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -219,10 +270,16 @@ public class HTTPReadHandler implements SelectionHandler
 	 */
 	protected void closeChannel(SelectionKey selectionKey)
 	{
+		this.server.timer.removeTimer(selectionKey);
 		selectionKey.cancel();
 		try
 		{
+			if (server.info)
+			{
+				System.out.println("HTTP disconnect: " + ((SocketChannel)selectionKey.channel()).getRemoteAddress());
+			}
 			selectionKey.channel().close();
+			
 		}
 		catch (IOException e1)
 		{
@@ -233,14 +290,26 @@ public class HTTPReadHandler implements SelectionHandler
 	
 	public void sendBadRequest(SelectionKey selectionKey)
 	{
+		this.server.timer.removeTimer(selectionKey);
 		selectionKey.cancel();
-		System.out.println("BadRequest");
-		//TODO: send to write Handler
+		if(server.debug)
+		{
+			System.out.println("Recived Bad Request.");
+		}
+		
+		this.sendResponse(selectionKey, new HTTPResponse(ResponseCode.BAD_REQUEST, null));
 	}
 
 	@Override
 	public int getDefaultInterestSet()
 	{
 		return SelectionKey.OP_READ;
+	}
+
+	@Override
+	public void onRegister(SelectableChannel channel, Object attachment)
+	{
+		// TODO add time out
+		
 	}
 }

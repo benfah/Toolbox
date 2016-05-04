@@ -1,6 +1,7 @@
 package us.fihgu.toolbox.web;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -8,19 +9,19 @@ import java.util.LinkedList;
  * It is responsible for balancing the work load of each Selector Thread.<br>
  * All SelectorThreads under the same SelectorThreadPool is expected to be using the same SelectionHandler and do the same task<br>
  */
-public abstract class SelectorThreadPool<T extends SelectionHandler>
+public class SelectorThreadPool
 {
-	LinkedList<SelectorThread<T>> pool = new LinkedList<SelectorThread<T>>();
+	LinkedList<SelectorThread> pool = new LinkedList<SelectorThread>();
 	
 	/**
 	 * @param numThreads the number of SelectorThreads in this pool
 	 * @throws IOException 
 	 */
-	public SelectorThreadPool(T handler, int numThreads) throws IOException
+	public SelectorThreadPool(SelectionHandler handler, int numThreads) throws IOException
 	{
 		for(int i = 0; i < numThreads; i++)
 		{
-			pool.add(new SelectorThread<>(handler));
+			pool.add(new SelectorThread(handler));
 		}
 	}
 	
@@ -28,11 +29,33 @@ public abstract class SelectorThreadPool<T extends SelectionHandler>
 	 * @return a valid SelectorThread with the Lightest work load.<br>
 	 * return null if this pool is empty or no valid SelectorThread exists.
 	 */
-	public abstract SelectorThread<T> getLightest();
+	public SelectorThread getLightest()
+	{
+		SelectorThread lightest = null;
+		
+		Iterator<SelectorThread> iterator = this.pool.iterator();
+		while(iterator.hasNext())
+		{
+			SelectorThread thread = iterator.next();
+			if(thread.isValid())
+			{
+				if(lightest == null)
+				{
+					lightest = thread;
+				}
+				else if(lightest.getKeySize() > thread.getKeySize())
+				{
+					lightest = thread;
+				}
+			}
+		}
+		
+		return lightest;
+	}
 	
 	public void startAll()
 	{
-		for(SelectorThread<T> thread : this.pool)
+		for(SelectorThread thread : this.pool)
 		{
 			thread.start();
 		}
@@ -44,7 +67,7 @@ public abstract class SelectorThreadPool<T extends SelectionHandler>
 	 */
 	public void closeAll()
 	{
-		for(SelectorThread<T> thread : this.pool)
+		for(SelectorThread thread : this.pool)
 		{
 			
 			try

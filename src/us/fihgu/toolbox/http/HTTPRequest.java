@@ -5,8 +5,14 @@ import java.util.HashMap;
 
 public class HTTPRequest
 {
-	protected ByteBuffer readBuffer = ByteBuffer.allocate(64);
-	protected StringBuilder lineBuilder = new StringBuilder(256);
+	protected ByteBuffer readBuffer;
+	protected StringBuilder lineBuilder;
+	
+	public HTTPRequest(HTTPServer server)
+	{
+		readBuffer = ByteBuffer.allocate(server.readBufferSize);
+		lineBuilder = new StringBuilder(server.lineBuilderSize);
+	}
 	
 	public HTTPRequestMethod method;
 	public String path;

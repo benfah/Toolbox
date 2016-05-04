@@ -11,17 +11,19 @@ import java.util.Set;
 /**
  * A thread that holds one selector with a given SelectionHandler<br>
  */
-public class SelectorThread<T extends SelectionHandler> extends Thread
+public class SelectorThread extends Thread
 {
+	//TODO: implement time out.
+	
 	protected Selector selector;
-	private T selectionHandler;
+	private SelectionHandler selectionHandler;
 	private boolean isStopping = false;
 	private boolean isStopped = false;
 	private boolean isBusy = false;
 	
 	private Object registerLock = new Object();
 	
-	public SelectorThread(T selectionHandler) throws IOException
+	public SelectorThread(SelectionHandler selectionHandler) throws IOException
 	{
 		selector = Selector.open();
 		
@@ -87,6 +89,7 @@ public class SelectorThread<T extends SelectionHandler> extends Thread
 	
 	public SelectionKey register(SelectableChannel channel, Object attachment) throws ClosedChannelException
 	{
+		this.getSelectionHandler().onRegister(channel, attachment);
 		SelectionKey result;
 		synchronized(this.registerLock)
 		{
@@ -133,7 +136,7 @@ public class SelectorThread<T extends SelectionHandler> extends Thread
 		return this.isStopped;
 	}
 	
-	public T getSelectionHandler()
+	public SelectionHandler getSelectionHandler()
 	{
 		return this.selectionHandler;
 	}

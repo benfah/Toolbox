@@ -1,9 +1,11 @@
 package us.fihgu.toolbox.http;
 
 import java.io.IOException;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Calendar;
 
 import us.fihgu.toolbox.web.SelectionHandler;
 
@@ -26,12 +28,14 @@ public class HTTPAcceptHandler implements SelectionHandler
 				SocketChannel client = ((ServerSocketChannel)selectionKey.channel()).accept();
 				client.configureBlocking(false);
 				
-				HTTPRequest request = new HTTPRequest();
-				server.readPool.getLightest().register(client, request);
+				HTTPRequest request = new HTTPRequest(server);
+				SelectionKey key = server.readPool.getLightest().register(client, request);
+				
+				server.timer.putTimer(key, Calendar.getInstance().getTimeInMillis() + server.timeOut);
 				
 				if(server.info)
 				{
-					System.out.println("connect: " + client.getRemoteAddress().toString());
+					System.out.println("HTTP connect: " + client.getRemoteAddress().toString());
 				}
 			}
 		}
@@ -45,5 +49,10 @@ public class HTTPAcceptHandler implements SelectionHandler
 	public int getDefaultInterestSet()
 	{
 		return SelectionKey.OP_ACCEPT;
+	}
+
+	@Override
+	public void onRegister(SelectableChannel channel, Object attachment)
+	{
 	}
 }
