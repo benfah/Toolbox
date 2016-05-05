@@ -10,7 +10,7 @@ public class StaticContextGenerator implements IContextGenerator
 	}
 	
 	@Override
-	public HTTPContext generateContext(String query)
+	public HTTPContext generateContext(HTTPRequest request)
 	{
 		return context;
 	}

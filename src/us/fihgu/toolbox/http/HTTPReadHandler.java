@@ -1,7 +1,6 @@
 package us.fihgu.toolbox.http;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.ClosedChannelException;
@@ -224,19 +223,7 @@ public class HTTPReadHandler implements SelectionHandler
 			System.out.println("");
 		}
 		
-		String host = "unknown";
-		
-		if(request.version.equals("HTTP/1.1"))
-		{
-			String temp = request.headers.get("host");
-			if(temp != null)
-			{
-				host = temp;
-			}
-		}
-		
-		URL path = new URL("http://" + host + request.path);
-		HTTPContext context = server.getContext(path);
+		HTTPContext context = server.getContext(request);
 		ResponseCode code = ResponseCode.OK;
 		
 		if(context == null)

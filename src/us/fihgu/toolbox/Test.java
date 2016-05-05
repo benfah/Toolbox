@@ -1,6 +1,9 @@
 package us.fihgu.toolbox;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
@@ -10,7 +13,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import us.fihgu.toolbox.http.FileContext;
 import us.fihgu.toolbox.http.HTTPServer;
+import us.fihgu.toolbox.http.StaticContextGenerator;
+import us.fihgu.toolbox.network.NetworkUtils;
+import us.fihgu.toolbox.packet.PacketUtils;
 
 
 public class Test implements Listener
@@ -30,6 +37,9 @@ public class Test implements Listener
 			player.sendMessage("The test command has been used " + count + " times, args[" + args.length + "]");
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
+			String ip = Loader.instance.getConfig().getString("http.host");
+			System.out.println(ip);
+			
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			event.setCancelled(true);
 		}
@@ -40,10 +50,20 @@ public class Test implements Listener
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 	
-	public static void main(String[] args)
+	public static void main(String[] args) throws UnknownHostException
 	{
-		HTTPServer server = new HTTPServer(new InetSocketAddress("localhost", 80));
+		
+	}
+	
+	public static void backup()
+	{
+		System.out.println(NetworkUtils.getExternalIP());
+		
+		InetSocketAddress address = new InetSocketAddress(NetworkUtils.getLocalIP(), 80);
+		System.out.println(address);
+		HTTPServer server = new HTTPServer(address);
+		server.debug = true;
+		server.putContextGenerator("/file.zip", new StaticContextGenerator(new FileContext(Paths.get("D:/Minecraft/Minecraft Plugins/Spigot-1.9/Test Server/resourcepacks/TerrariaCraft.zip"))));
 		server.startServer();
-		//server.stopServer();
 	}
 }

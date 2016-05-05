@@ -2,6 +2,7 @@ package us.fihgu.toolbox.http;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -51,12 +52,25 @@ public class HTTPServer extends WebServer
 		super(address);
 	}
 	
-	public HTTPContext getContext(URL path)
+	public HTTPContext getContext(HTTPRequest request) throws MalformedURLException
 	{
-        IContextGenerator generator = this.contextGenerators.get(path.getHost() + path.getPath());
+		String host = "unknown";
+		
+		if(request.version.equals("HTTP/1.1"))
+		{
+			String temp = request.headers.get("host");
+			if(temp != null)
+			{
+				host = temp;
+			}
+		}
+		
+		URL path = new URL("http://" + host + request.path);
+		
+        IContextGenerator generator = this.contextGenerators.get(path.getPath());
         if(generator != null)
         {
-        	return generator.generateContext(path.getQuery());
+        	return generator.generateContext(request);
         }
 		
 		return null;
