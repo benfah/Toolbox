@@ -1,4 +1,6 @@
 http:
- host: some ran dom textasad
+ localhost: 
+ port: 80
+ host: 
  numReadThread: 4
  numWriteThread: 4

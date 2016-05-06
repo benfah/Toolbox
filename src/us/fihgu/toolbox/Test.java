@@ -59,11 +59,6 @@ public class Test implements Listener
 	{
 		System.out.println(NetworkUtils.getExternalIP());
 		
-		InetSocketAddress address = new InetSocketAddress(NetworkUtils.getLocalIP(), 80);
-		System.out.println(address);
-		HTTPServer server = new HTTPServer(address);
-		server.debug = true;
-		server.putContextGenerator("/file.zip", new StaticContextGenerator(new FileContext(Paths.get("D:/Minecraft/Minecraft Plugins/Spigot-1.9/Test Server/resourcepacks/TerrariaCraft.zip"))));
-		server.startServer();
+		
 	}
 }
