@@ -1,5 +1,6 @@
 package us.fihgu.toolbox;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import us.fihgu.toolbox.lib.LibraryUtils;
 import us.fihgu.toolbox.resourcepack.ResourcePackListener;
@@ -21,19 +22,42 @@ public class Loader extends JavaPlugin
 		new MenuListener().register(this);
 		new ResourcePackListener().register(this);
 		
-		ResourcePackManager.startServer();
-		
 		System.out.print("fihgu's Toolbox is loaded.");
 		
 		if(debug)
 		{
 			new Test().register(this);
 		}
+		
+		BukkitRunnable task = new BukkitRunnable()
+		{
+
+			@Override
+			public void run()
+			{
+				ResourcePackManager.Load();
+				
+				if(ResourcePackManager.hasResource())
+				{
+					setupHTTPServer();
+				}
+				
+			}
+			
+		};
+		
+		task.runTask(this);
+		
+	}
+	
+	private void setupHTTPServer()
+	{
+		
 	}
 	
 	@Override
 	public void onDisable()
 	{
-		ResourcePackManager.stopServer();
+		
 	}
 }

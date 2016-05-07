@@ -18,7 +18,7 @@ public class ResourcePackManager
 	/**
 	* custom items based on diamond hoes
 	*/
-	private static HashMap<Integer, String> customItems = new HashMap<Integer, String>();
+	private static HashMap<String, String> customItems = new HashMap<String, String>();
 	
 	public static void registerResource(JavaPlugin plugin, OutputStream source) throws IOException
 	{
@@ -70,5 +70,18 @@ public class ResourcePackManager
 		}
 		
 		return "";
+	}
+	
+	/**
+	 * 
+	 */
+	public static void purge()
+	{
+		
+	}
+
+	public static boolean hasResource()
+	{
+		return !resourceUsers.keySet().isEmpty();
 	}
 }

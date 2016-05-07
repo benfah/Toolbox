@@ -1,5 +1,7 @@
 package us.fihgu.toolbox.resourcepack;
 import java.net.InetSocketAddress;
+import java.nio.file.Paths;
+
 import us.fihgu.toolbox.http.FileContext;
 import us.fihgu.toolbox.http.HTTPServer;
 import us.fihgu.toolbox.http.StaticContextGenerator;
