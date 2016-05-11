@@ -100,6 +100,18 @@ public class HTTPServer extends WebServer
 		timer.start();
 		super.init();
 	}
+	
+	
+
+	@Override
+	public void startServer()
+	{
+		super.startServer();
+		if(this.info)
+		{
+			System.out.println("HTTP Server binded to: " + this.address);
+		}
+	}
 
 	@Override
 	public void stopServer()

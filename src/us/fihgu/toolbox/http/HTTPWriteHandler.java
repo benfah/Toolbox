@@ -2,7 +2,6 @@ package us.fihgu.toolbox.http;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.CharacterCodingException;
@@ -153,7 +152,8 @@ public class HTTPWriteHandler implements SelectionHandler
 	}
 
 	@Override
-	public void onRegister(SelectableChannel channel, Object attachment)
+	public void onRegister(SelectionKey key)
 	{
+		
 	}
 }

@@ -1,7 +1,6 @@
 package us.fihgu.toolbox.http;
 
 import java.io.IOException;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -52,7 +51,8 @@ public class HTTPAcceptHandler implements SelectionHandler
 	}
 
 	@Override
-	public void onRegister(SelectableChannel channel, Object attachment)
+	public void onRegister(SelectionKey key)
 	{
+		
 	}
 }

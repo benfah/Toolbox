@@ -10,33 +10,31 @@ import us.fihgu.toolbox.Loader;
 
 public class ResourcePackServer
 {
+	public static String localhost;
+	public static String host;
+	public static int port;
+	
+	public static String path;
+	
 	private static HTTPServer server;
 	public static void startServer()
 	{
-		String localhost = Loader.instance.getConfig().getString("http.localhost");
-		String host = Loader.instance.getConfig().getString("http.host");
-		int port = Loader.instance.getConfig().getInt("http.port");
+		localhost = Loader.instance.getConfig().getString("http.localhost", NetworkUtils.getLocalIP().getHostAddress());
+		host = Loader.instance.getConfig().getString("http.host", NetworkUtils.getExternalIP());
+		port = Loader.instance.getConfig().getInt("http.port");
 		int numReadThread = Loader.instance.getConfig().getInt("http.numReadThread");
 		int numWriteThread = Loader.instance.getConfig().getInt("http.numWriteThread");
 		
-		if(localhost == null)
-		{
-			localhost = NetworkUtils.getLocalIP().getHostAddress();
-		}
+		int build = Loader.instance.getConfig().getInt("resource.build", 1);
+		path = "/resourcepack" + build + ".zip";
+		build++;
+		Loader.instance.getConfig().set("resource.build", build);
 		
-		if(host == null)
-		{
-			host = NetworkUtils.getExternalIP();
-		}
-		
-		
-		
-		InetSocketAddress address = new InetSocketAddress(host , port);
-		System.out.println(address);
+		InetSocketAddress address = new InetSocketAddress(localhost , port);
 		server = new HTTPServer(address);
 		server.numReadThread = numReadThread;
 		server.numWriteThread = numWriteThread;
-		server.putContextGenerator("/resourcepack.zip", new StaticContextGenerator(new FileContext(Paths.get("./resourcepacks/resourcepack.zip"))));
+		server.putContextGenerator(path, new StaticContextGenerator(new FileContext(Paths.get("./fihgu/toolbox/resource/resource.zip"))));
 		server.startServer();
 	}
 	

@@ -1,5 +1,6 @@
 package us.fihgu.toolbox.data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -9,8 +10,9 @@ import us.fihgu.toolbox.json.JsonBase;
  * A map that both key, and value are unique.
  * @author fihgu
  */
-public class BiDirectionalMap<K,V> extends JsonBase
+public class BiDirectionalMap<K,V> extends JsonBase implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	protected HashMap<K, V> keyMap = new HashMap<K, V>();
 	protected HashMap<V, K> valueMap = new HashMap<V, K>();
 	

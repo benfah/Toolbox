@@ -1,10 +1,13 @@
 package us.fihgu.toolbox;
+import java.io.IOException;
+
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import us.fihgu.toolbox.lib.LibraryUtils;
+import us.fihgu.toolbox.item.CustomItemManager;
 import us.fihgu.toolbox.resourcepack.ResourcePackListener;
 import us.fihgu.toolbox.resourcepack.ResourcePackManager;
+import us.fihgu.toolbox.resourcepack.ResourcePackServer;
 import us.fihgu.toolbox.ui.MenuListener;
 
 public class Loader extends JavaPlugin
@@ -17,8 +20,11 @@ public class Loader extends JavaPlugin
 	public void onEnable()
 	{
 		Loader.instance = this;
+		this.saveDefaultConfig();
 		
-		LibraryUtils.loadLibraries(this);
+		CustomItemManager.load();
+		
+		//LibraryUtils.loadLibraries(this);
 		new MenuListener().register(this);
 		new ResourcePackListener().register(this);
 		
@@ -35,29 +41,36 @@ public class Loader extends JavaPlugin
 			@Override
 			public void run()
 			{
-				ResourcePackManager.Load();
-				
 				if(ResourcePackManager.hasResource())
 				{
 					setupHTTPServer();
+					CustomItemManager.save();
 				}
-				
 			}
-			
 		};
-		
-		task.runTask(this);
-		
+		task.runTask(this);		
 	}
 	
 	private void setupHTTPServer()
 	{
+		try
+		{
+			ResourcePackManager.Load();
+			ResourcePackManager.buildResourcePack();
+			System.out.println("Starting a http server for hosting resource pack.");
+			ResourcePackServer.startServer();
+			this.saveConfig();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		
 	}
 	
 	@Override
 	public void onDisable()
 	{
-		
+		ResourcePackServer.stopServer();
 	}
 }

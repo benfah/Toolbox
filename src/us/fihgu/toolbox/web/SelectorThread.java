@@ -12,9 +12,7 @@ import java.util.Set;
  * A thread that holds one selector with a given SelectionHandler<br>
  */
 public class SelectorThread extends Thread
-{
-	//TODO: implement time out.
-	
+{	
 	protected Selector selector;
 	private SelectionHandler selectionHandler;
 	private boolean isStopping = false;
@@ -89,13 +87,15 @@ public class SelectorThread extends Thread
 	
 	public SelectionKey register(SelectableChannel channel, Object attachment) throws ClosedChannelException
 	{
-		this.getSelectionHandler().onRegister(channel, attachment);
+		
 		SelectionKey result;
 		synchronized(this.registerLock)
 		{
 			this.selector.wakeup();
 			result = channel.register(this.selector, this.selectionHandler.getDefaultInterestSet(), attachment);
+			
 		}
+		this.getSelectionHandler().onRegister(result);
 		return result;
 	}
 	

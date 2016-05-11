@@ -7,13 +7,26 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import us.fihgu.toolbox.resourcepack.Model;
+import us.fihgu.toolbox.resourcepack.ResourcePackManager;
 
+/**
+ * A custom item based on diamond hoe. <br>
+ * it must be registered with {@link #register(JavaPlugin)} method to function.<br>
+ * <br>
+ * Features:<br>
+ * Display custom models.<br>
+ * Item events are fed to the class.<br>
+ * Limitation: <br>
+ * Can not stack normally like other items.<br>
+ * @author fihgu
+ *
+ */
 public abstract class CustomItem
 {	
-	protected String name;
-	protected String displayName;
-	protected String[] lores;
-	protected Model model;
+	public String name;
+	public String displayName;
+	public String[] lores;
+	public Model model;
 	
 	private short id;
 	private String registeredName;
@@ -33,7 +46,29 @@ public abstract class CustomItem
 	public void register(JavaPlugin plugin)
 	{
 		this.registeredName = plugin.getName() + ":" + this.name;
-		//TODO: register the item.
+		Short id = null;
+		Number temp = CustomItemManager.registeredItemIDs.getKey(registeredName);
+		if(temp != null)
+		{
+			id = temp.shortValue();
+		}
+		
+		if(id == null)
+		{
+			id = CustomItemManager.getFreeId();
+		}
+		
+		if(id == -1)
+		{
+			System.err.println("Custom item: " + name + " can not be registered, all ids are taken, try remove some plugins and purge custom item ids.");
+		}
+		else
+		{
+			this.id = id;
+			CustomItemManager.registeredItemIDs.put(id, registeredName);
+			CustomItemManager.registeredItems.put(id, this);
+			ResourcePackManager.resourceUsers.put(plugin.getName() ,plugin.getDescription().getVersion());
+		}
 	}
 	
 	public ItemStack createItemStack()

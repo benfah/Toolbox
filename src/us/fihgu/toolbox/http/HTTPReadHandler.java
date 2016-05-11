@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.CoderResult;
@@ -294,9 +293,8 @@ public class HTTPReadHandler implements SelectionHandler
 	}
 
 	@Override
-	public void onRegister(SelectableChannel channel, Object attachment)
+	public void onRegister(SelectionKey key)
 	{
-		// TODO add time out
-		
+		server.timer.putTimer(key, Calendar.getInstance().getTimeInMillis() + server.timeOut);
 	}
 }

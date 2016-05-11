@@ -1,13 +1,13 @@
 package us.fihgu.toolbox.resourcepack;
 
 import java.util.HashMap;
-
 import us.fihgu.toolbox.json.JsonBase;
 
 public class Model extends JsonBase
 {
 	public String parent = "item/handheld";
 	public HashMap<String, String> textures = new HashMap<>();
+	public OverrideEntry[] overrides;
 	
 	public String getParent()
 	{

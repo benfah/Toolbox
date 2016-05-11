@@ -1,16 +1,20 @@
 package us.fihgu.toolbox.resourcepack;
 
 import us.fihgu.toolbox.reflection.ReflectionUtils;
-import java.io.OutputStream;
 import java.io.IOException;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.io.File;
 import us.fihgu.toolbox.json.JsonUtils;
+import us.fihgu.toolbox.Loader;
 import us.fihgu.toolbox.file.FileUtils;
+import us.fihgu.toolbox.item.CustomItem;
+import us.fihgu.toolbox.item.CustomItemManager;
+
 import java.util.LinkedList;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 
 public class ResourcePackManager
 {
@@ -19,11 +23,12 @@ public class ResourcePackManager
 	/**
 	* It stores the name and version of plugin that uses this resource manager.
 	*/
-	private static HashMap<String, String> resourceUsers = new HashMap<String, String>();
+	public static HashMap<String, String> resourceUsers = new HashMap<String, String>();
 	
 	private static HashMap<String, String> oldResourceUsers;
 	
-	private static File saveFile = new File("./fihgu/toolbox/resource/");
+	private static File saveFile = new File("./fihgu/toolbox/resourceUsers.json");
+	private static File resourceFile = new File("./fihgu/toolbox/resource/resource.zip");
 	
 	private static LinkedList<InputStream> resources = new LinkedList<>();
 	
@@ -38,9 +43,13 @@ public class ResourcePackManager
 		resources.add(source);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void Load()
 	{
-		oldResourceUsers = (HashMap<String, String>) JsonUtils.fromFile(saveFile, HashMap.class);
+		if(saveFile.exists())
+		{
+			oldResourceUsers = (HashMap<String, String>) JsonUtils.fromFile(saveFile, HashMap.class);
+		}	
 	}
 	
 	public static void save()
@@ -50,9 +59,27 @@ public class ResourcePackManager
 	
 	private static boolean needsRebuild()
 	{
+		String resourcePack = getServerResourcePack();
+		String oldResourcePack = Loader.instance.getConfig().getString("resource.lastServerResourcePack");
+		
+		if(oldResourcePack != null)
+		{
+			if(!oldResourcePack.equals(resourcePack))
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if(resourcePack != null && !resourcePack.equals(""))
+			{
+				return true;
+			}
+		}
+		
 		if(oldResourceUsers == null)
 		{
-			if(resourceUsers.size() > 0)
+			if(hasResource())
 			{
 				return true;
 			}
@@ -83,28 +110,107 @@ public class ResourcePackManager
 	{
 		if(needsRebuild())
 		{
+			System.out.println("Resource pack change detected, building new resource pack.");
+			
+			//initialize work space
 			File work = new File("./fihgu/toolbox/resource/work/");
 			FileUtils.deleteFolder(work);
-			FileUtils.createFileAndPath(work);
-			File temp = new File("./fihgus/toolbox/resource/work/temp.zip");
+			File temp = new File("./fihgu/toolbox/resource/download/temp.zip");
 			FileUtils.createFileAndPath(temp);
+			
+			//check and download server's original resource pack.
+			String urlStr = getServerResourcePack();
+			if(urlStr != null && !urlStr.equals("") && !urlStr.equals("null"))
+			{
+				Loader.instance.getConfig().set("resource.lastServerResourcePack", urlStr);
+				System.out.println("Found server resource pack setting.");
+				try
+				{
+					System.out.println("downloading server resource pack");
+					URL url = new URL(urlStr);
+					FileUtils.copyURLtoFile(url, temp);
+					System.out.println("unpacking server resource pack");
+					FileUtils.unzip(temp, work);
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
+				
+			}
+			
+			//process plugin resource packs.
 			for(InputStream in : resources)
 			{
-				FileOutputStream fileOut = new FileOutputStream(temp);
-				byte[] buffer = new byte[4096];
-				int byteRead = 0;
-				while((byteRead = in.read(buffer)) > 0)
+				try
 				{
-					fileOut.write(buffer, 0, byteRead);
+					//download each plugin resource
+					FileOutputStream fileOut = new FileOutputStream(temp);
+					
+					FileUtils.copyStreams(in, fileOut);
+				
+					//extract each plugin resource
+					FileUtils.unzip(temp, work);
 				}
-				fileOut.close();
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
+			
+			//create base model
+			Model hoe = Model.CreateSimpleModel("items/diamond_hoe");
+			LinkedList<OverrideEntry> overrides = new LinkedList<>();
+			
+			//process each custom item.
+			for(short id : CustomItemManager.registeredItems.keySet())
+			{
+				CustomItem item = CustomItemManager.registeredItems.get(id);
+				String modelName = "item/" + item.getRegisteredName().replaceAll(":", "_");
+				
+				//save custom item's model
+				File customModelFile = new File(work, "/assets/minecraft/models/" + modelName + ".json");
+				JsonUtils.toFile(customModelFile, item.model);
+				
+				//add override entry to base model
+				Predicate predicate = new Predicate();
+				predicate.damaged = 0;
+				predicate.damage = item.getId()/CustomItemManager.MAX_ID;
+				overrides.add(new OverrideEntry(predicate, modelName));
+			}
+			
+			//put all overrides into base model
+			hoe.overrides = overrides.toArray(new OverrideEntry[]{});
+			//save base model
+			File hoeFile = new File(work, "/assets/minecraft/models/item/diamond_hoe.json");
+			JsonUtils.toFile(hoeFile, hoe);
+			
+			
+			//copy resource pack.meta and logo.png
+			FileUtils.copyResource(Loader.instance, "resource/pack.mcmeta", new File(work, "pack.mcmeta"));
+			FileUtils.copyResource(Loader.instance, "resource/pack.png", new File(work, "pack.png"));
+			
+			//pack up result resource pack.
+			System.out.println("Packing complete resource pack.");
+			FileUtils.zip(work, resourceFile);
+			System.out.println("Resource pack has been constrcuted.");
+			
+			//remove temporary folder.
+			FileUtils.deleteFolder(work);
+			FileUtils.deleteFolder(temp.getParentFile());
+		}
+		else
+		{
+			System.out.println("No resource pack change, using chached resource pack.");
 		}
 		
+		//close all stream
 		for(InputStream in: resources)
 		{
 			in.close();
 		}
+		
+		ResourcePackManager.save();
 	}
 	
 	/**
@@ -124,7 +230,7 @@ public class ResourcePackManager
 	}
 	
 	/**
-	* @return whatever the user entered as resourcepack in the server.porperties file.
+	* @return whatever the user entered as resource pack in the server.porperties file.
 	*/
 	public static String getServerResourcePack()
 	{
@@ -141,17 +247,19 @@ public class ResourcePackManager
 		
 		return "";
 	}
-	
-	/**
-	 * 
-	 */
-	public static void purge()
-	{
-		
-	}
 
 	public static boolean hasResource()
 	{
-		return !resourceUsers.keySet().isEmpty();
+		if(CustomItemManager.registeredItems.size() > 0)
+		{
+			return true;
+		}
+		
+		if(resourceUsers.size() > 0)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 }

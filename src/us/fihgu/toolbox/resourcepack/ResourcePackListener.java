@@ -23,6 +23,22 @@ public class ResourcePackListener implements Listener
 	public void onLogin(PlayerLoginEvent event)
 	{
 		Player player = event.getPlayer();
+		
+		BukkitRunnable task = new BukkitRunnable()
+		{
+
+			@Override
+			public void run()
+			{
+				if (ResourcePackManager.hasResource())
+				{
+					String link = "http://" + ResourcePackServer.host + ":" + ResourcePackServer.port + ResourcePackServer.path;
+					player.setResourcePack(link);
+				}
+			}
+
+		};
+		task.runTask(Loader.instance);
 	}
 	
 	@EventHandler

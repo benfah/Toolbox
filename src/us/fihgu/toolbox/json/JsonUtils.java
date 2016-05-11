@@ -10,12 +10,18 @@ import java.util.Scanner;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import us.fihgu.toolbox.file.FileUtils;
 
 public class JsonUtils
 {
-	public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	public static Gson gson;
+	
+	static
+	{
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.setPrettyPrinting();
+		gson = gsonBuilder.create();
+	}
 	
 	public static Object fromFile(File file, Class<?> type)
 	{

@@ -34,7 +34,7 @@ public class HTTPResponse
 		
 		this.context = context;
 		
-		//TODO: add default headers.
+		//default headers
 		String time = dateFormat.format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
 		headers.put("Date", time);
 		headers.put("Server", "fihgu's HTTP Server/1.0");
