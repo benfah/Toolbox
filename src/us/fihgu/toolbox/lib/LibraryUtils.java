@@ -19,7 +19,8 @@ import us.fihgu.toolbox.file.FileUtils;
 public class LibraryUtils
 {
 	/**
-	 *extract contents from "libs/"  folder from given plugin's jar file, and register them to given plugin's ClassLoader.
+	 * extract contents from "libs/"  folder from given plugin's jar file, and register them to given plugin's ClassLoader.<br>
+	 * --finally fixed my OCD<br>
 	 */
 	public static void loadLibraries(JavaPlugin plugin)
 	{

@@ -35,7 +35,7 @@ public class ResourcePackManager
 	/**
 	* register a resource pack to be combined into server resource pack.<br>
 	* you may only use this method inside your onEnabl() method, else the resource will not be registered correctly.<br>
-	* when a new resource being registered the first time, the server chache will be reconstructed.<br>
+	* when a new resource being registered the first time, the server cache will be reconstructed.<br>
 	*/
 	public static void registerResource(JavaPlugin plugin, InputStream source) throws IOException
 	{
