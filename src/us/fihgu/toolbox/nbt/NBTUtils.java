@@ -41,4 +41,9 @@ public class NBTUtils
 		
 		return null;
 	}
+	
+	public static void setNBTTag(ItemStack item, NBTCompoundWrapper nbt)
+	{
+		//TODO: set NBT compound.
+	}
 }

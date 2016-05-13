@@ -8,6 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import us.fihgu.toolbox.resourcepack.Model;
 import us.fihgu.toolbox.resourcepack.ResourcePackManager;
+import us.fihgu.toolbox.nbt.NBTCompoundWrapper;
+import us.fihgu.toolbox.nbt.NBTUtils;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * A custom item based on diamond hoe. <br>
@@ -82,6 +85,10 @@ public abstract class CustomItem
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 		item.setItemMeta(meta);
 		
+		NBTCompoundWrapper nbt = NBTUtils.getNBTTag(item);
+		nbt.setShort("customItemId", this.id);
+		NBTUtils.setNBTTag(item, nbt);
+		
 		item.setDurability(this.id);
 		
 		return item;
@@ -91,6 +98,8 @@ public abstract class CustomItem
 	{
 		return this.id;
 	}
+	
+	public abstract void onInteract(PlayerInteractEvent event);
 	
 	/**
 	 * 

@@ -9,6 +9,7 @@ import us.fihgu.toolbox.resourcepack.ResourcePackListener;
 import us.fihgu.toolbox.resourcepack.ResourcePackManager;
 import us.fihgu.toolbox.resourcepack.ResourcePackServer;
 import us.fihgu.toolbox.ui.MenuListener;
+import us.fihgu.toolbox.item.CustomItemListener;
 
 public class Loader extends JavaPlugin
 {
@@ -27,6 +28,7 @@ public class Loader extends JavaPlugin
 		//LibraryUtils.loadLibraries(this);
 		new MenuListener().register(this);
 		new ResourcePackListener().register(this);
+		new CustomItemListener().register(this);
 		
 		System.out.print("fihgu's Toolbox is loaded.");
 		
