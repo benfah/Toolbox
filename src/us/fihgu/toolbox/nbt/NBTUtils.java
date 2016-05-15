@@ -41,4 +41,19 @@ public class NBTUtils
 		
 		return null;
 	}
+	
+	public static void setNBTTag(ItemStack item, NBTCompoundWrapper nbt)
+	{
+		Class<?> craftItemStackClass = ReflectionUtils.getCraftBukkitClass("inventory.CraftItemStack");
+		Class<?> nmsItemStackClass = ReflectionUtils.getNMSClass("ItemStack");
+		try
+		{
+			Object nmsItemStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
+			nmsItemStackClass.getMethod("setTag", nbt.getInstance().getClass()).invoke(nmsItemStack, nbt.getInstance());
+		} 
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

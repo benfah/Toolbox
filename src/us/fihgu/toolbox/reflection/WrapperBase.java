@@ -97,7 +97,11 @@ public class WrapperBase
 	{
 		return this.invoke(methodName, returnType, new Class<?>[]{}, new Object[]{});
 	}
-
+	
+	/**
+	 * 
+	 * @return the wrapped instance
+	 */
 	public Object getInstance()
 	{
 		return this.instance;
