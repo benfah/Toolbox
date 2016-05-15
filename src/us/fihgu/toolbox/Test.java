@@ -13,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import us.fihgu.toolbox.resourcepack.ResourcePackServer;
-
 
 public class Test implements Listener
 {
@@ -32,8 +30,7 @@ public class Test implements Listener
 			String args[] = Arrays.asList(parts).subList(Math.min(1, parts.length - 1), parts.length).toArray(new String[]{});
 			player.sendMessage("The test command has been used " + count + " times, args[" + args.length + "]");
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			String link = "http://" + ResourcePackServer.host + ":" + ResourcePackServer.port + ResourcePackServer.path;
-			player.setResourcePack(link);
+			
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			event.setCancelled(true);
 		}

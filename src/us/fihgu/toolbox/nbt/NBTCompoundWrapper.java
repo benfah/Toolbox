@@ -107,29 +107,29 @@ public class NBTCompoundWrapper extends NBTBaseWrapper
 			return null;
 		}
 	}
-	public byte getByte(String key)
+	public Byte getByte(String key)
 	{
-		return this.invoke("getByte", byte.class, new Class<?>[]{String.class}, new Object[]{key});
+		return this.invoke("getByte", Byte.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
-	public short getShort(String key)
+	public Short getShort(String key)
 	{
-		return this.invoke("getShort", short.class, new Class<?>[]{String.class}, new Object[]{key});
+		return this.invoke("getShort", Short.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
-	public int getInt(String key)
+	public Integer getInt(String key)
 	{
-		return this.invoke("getInt", int.class, new Class<?>[]{String.class}, new Object[]{key});
+		return this.invoke("getInt", Integer.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
-	public long getLong(String key)
+	public Long getLong(String key)
 	{
-		return this.invoke("getLong", long.class, new Class<?>[]{String.class}, new Object[]{key});
+		return this.invoke("getLong", Long.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
-	public float getFloat(String key)
+	public Float getFloat(String key)
 	{
-		return this.invoke("getFloat", float.class, new Class<?>[]{String.class}, new Object[]{key});
+		return this.invoke("getFloat", Float.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
-	public double getDouble(String key)
+	public Double getDouble(String key)
 	{
-		return this.invoke("getDouble", double.class, new Class<?>[]{String.class}, new Object[]{key});
+		return this.invoke("getDouble", Double.class, new Class<?>[]{String.class}, new Object[]{key});
 	}
 	public String getString(String key)
 	{

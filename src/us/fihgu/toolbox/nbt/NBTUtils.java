@@ -44,6 +44,16 @@ public class NBTUtils
 	
 	public static void setNBTTag(ItemStack item, NBTCompoundWrapper nbt)
 	{
-		//TODO: set NBT compound.
+		Class<?> craftItemStackClass = ReflectionUtils.getCraftBukkitClass("inventory.CraftItemStack");
+		Class<?> nmsItemStackClass = ReflectionUtils.getNMSClass("ItemStack");
+		try
+		{
+			Object nmsItemStack = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class).invoke(null, item);
+			nmsItemStackClass.getMethod("setTag", nbt.getInstance().getClass()).invoke(nmsItemStack, nbt.getInstance());
+		} 
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

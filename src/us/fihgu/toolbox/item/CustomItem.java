@@ -1,6 +1,7 @@
 package us.fihgu.toolbox.item;
 
-import org.bukkit.Material;
+import java.util.HashMap;
+
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -8,24 +9,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import us.fihgu.toolbox.resourcepack.Model;
 import us.fihgu.toolbox.resourcepack.ResourcePackManager;
-import us.fihgu.toolbox.nbt.NBTCompoundWrapper;
+import us.fihgu.toolbox.data.BiDirectionalMap;
 import us.fihgu.toolbox.nbt.NBTUtils;
-import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
- * A custom item based on diamond hoe. <br>
+ * A custom item based on a damageable item<br>
  * it must be registered with {@link #register(JavaPlugin)} method to function.<br>
- * <br>
- * Features:<br>
- * Display custom models.<br>
- * Item events are fed to the class.<br>
- * Limitation: <br>
- * Can not stack normally like other items.<br>
  * @author fihgu
  *
  */
-public abstract class CustomItem
+public class CustomItem
 {	
+	public DamageableItem baseItem;
 	public String name;
 	public String displayName;
 	public String[] lores;
@@ -34,8 +29,9 @@ public abstract class CustomItem
 	private short id;
 	private String registeredName;
 	
-	public CustomItem(String name, String displayName, String[] lores, Model model)
+	public CustomItem(DamageableItem baseItem, String name, String displayName, String[] lores, Model model)
 	{
+		this.baseItem = baseItem;
 		this.name = name;
 		this.displayName = displayName;
 		this.lores = lores;
@@ -50,15 +46,22 @@ public abstract class CustomItem
 	{
 		this.registeredName = plugin.getName() + ":" + this.name;
 		Short id = null;
-		Number temp = CustomItemManager.registeredItemIDs.getKey(registeredName);
-		if(temp != null)
+		
+		BiDirectionalMap<Short, String> save = CustomItemManager.registeredItemIDs.get(this.baseItem);
+		
+		if(save != null)
 		{
-			id = temp.shortValue();
+			id = save.getKey(registeredName);
+		}
+		else
+		{
+			save = new BiDirectionalMap<Short, String>();
+			CustomItemManager.registeredItemIDs.put(baseItem, save);
 		}
 		
 		if(id == null)
 		{
-			id = CustomItemManager.getFreeId();
+			id = CustomItemManager.getFreeId(this.baseItem);
 		}
 		
 		if(id == -1)
@@ -68,15 +71,22 @@ public abstract class CustomItem
 		else
 		{
 			this.id = id;
-			CustomItemManager.registeredItemIDs.put(id, registeredName);
-			CustomItemManager.registeredItems.put(id, this);
+			save.put(id, registeredName);
+			
+			HashMap<Short, CustomItem> ids = CustomItemManager.registeredItems.get(baseItem);
+			if(ids == null)
+			{
+				ids = new HashMap<Short, CustomItem>();
+				CustomItemManager.registeredItems.put(baseItem, ids);
+			}
+			ids.put(this.id, this);
 			ResourcePackManager.resourceUsers.put(plugin.getName() ,plugin.getDescription().getVersion());
 		}
 	}
 	
 	public ItemStack createItemStack()
 	{
-		ItemStack item = new ItemStack(Material.DIAMOND_HOE);
+		ItemStack item = new ItemStack(this.baseItem.getMaterial());
 		ItemUtils.setLore(item, this.lores);
 		ItemUtils.setDisplayName(item, this.name);
 		
@@ -85,11 +95,9 @@ public abstract class CustomItem
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 		item.setItemMeta(meta);
 		
-		NBTCompoundWrapper nbt = NBTUtils.getNBTTag(item);
-		nbt.setShort("customItemId", this.id);
-		NBTUtils.setNBTTag(item, nbt);
-		
 		item.setDurability(this.id);
+		
+		System.out.println(NBTUtils.getNBTTag(item).toString());
 		
 		return item;
 	}
@@ -98,8 +106,6 @@ public abstract class CustomItem
 	{
 		return this.id;
 	}
-	
-	public abstract void onInteract(PlayerInteractEvent event);
 	
 	/**
 	 * 

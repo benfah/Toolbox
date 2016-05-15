@@ -1,6 +1,5 @@
 package us.fihgu.toolbox;
 import java.io.IOException;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -9,18 +8,18 @@ import us.fihgu.toolbox.resourcepack.ResourcePackListener;
 import us.fihgu.toolbox.resourcepack.ResourcePackManager;
 import us.fihgu.toolbox.resourcepack.ResourcePackServer;
 import us.fihgu.toolbox.ui.MenuListener;
-import us.fihgu.toolbox.item.CustomItemListener;
 
 public class Loader extends JavaPlugin
 {
 	public static Loader instance = null;
 	
-	public static boolean debug = true;
+	public static boolean debug = false;
 	
 	@Override
 	public void onEnable()
 	{
 		Loader.instance = this;
+		
 		this.saveDefaultConfig();
 		
 		CustomItemManager.load();
@@ -28,7 +27,6 @@ public class Loader extends JavaPlugin
 		//LibraryUtils.loadLibraries(this);
 		new MenuListener().register(this);
 		new ResourcePackListener().register(this);
-		new CustomItemListener().register(this);
 		
 		System.out.print("fihgu's Toolbox is loaded.");
 		

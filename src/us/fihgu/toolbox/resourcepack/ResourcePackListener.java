@@ -33,6 +33,7 @@ public class ResourcePackListener implements Listener
 				if (ResourcePackManager.hasResource())
 				{
 					String link = "http://" + ResourcePackServer.host + ":" + ResourcePackServer.port + ResourcePackServer.path;
+					System.out.println(link);
 					player.setResourcePack(link);
 				}
 			}

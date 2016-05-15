@@ -10,6 +10,7 @@ import us.fihgu.toolbox.Loader;
 import us.fihgu.toolbox.file.FileUtils;
 import us.fihgu.toolbox.item.CustomItem;
 import us.fihgu.toolbox.item.CustomItemManager;
+import us.fihgu.toolbox.item.DamageableItem;
 
 import java.util.LinkedList;
 import java.io.FileOutputStream;
@@ -120,9 +121,9 @@ public class ResourcePackManager
 			
 			//check and download server's original resource pack.
 			String urlStr = getServerResourcePack();
+			Loader.instance.getConfig().set("resource.lastServerResourcePack", urlStr);
 			if(urlStr != null && !urlStr.equals("") && !urlStr.equals("null"))
 			{
-				Loader.instance.getConfig().set("resource.lastServerResourcePack", urlStr);
 				System.out.println("Found server resource pack setting.");
 				try
 				{
@@ -158,32 +159,41 @@ public class ResourcePackManager
 				}
 			}
 			
-			//create base model
-			Model hoe = Model.CreateSimpleModel("items/diamond_hoe");
-			LinkedList<OverrideEntry> overrides = new LinkedList<>();
 			
-			//process each custom item.
-			for(short id : CustomItemManager.registeredItems.keySet())
+			
+			//process custom item.
+			for(DamageableItem baseItem: CustomItemManager.registeredItems.keySet())
 			{
-				CustomItem item = CustomItemManager.registeredItems.get(id);
-				String modelName = "item/" + item.getRegisteredName().replaceAll(":", "_");
+				//create base model
+				Model baseModel = Model.CreateSimpleModel("items/" + baseItem.getModelName());
+				LinkedList<OverrideEntry> overrides = new LinkedList<>();
 				
-				//save custom item's model
-				File customModelFile = new File(work, "/assets/minecraft/models/" + modelName + ".json");
-				JsonUtils.toFile(customModelFile, item.model);
+				HashMap<Short, CustomItem> items = CustomItemManager.registeredItems.get(baseItem);
 				
-				//add override entry to base model
-				Predicate predicate = new Predicate();
-				predicate.damaged = 0;
-				predicate.damage = item.getId()/CustomItemManager.MAX_ID;
-				overrides.add(new OverrideEntry(predicate, modelName));
+				for(short id : items.keySet())
+				{
+					CustomItem item = items.get(id);
+					String modelName = "item/" + item.getRegisteredName().replaceAll(":", "_");
+					
+					//save custom item's model
+					File customModelFile = new File(work, "/assets/minecraft/models/" + modelName + ".json");
+					JsonUtils.toFile(customModelFile, item.model);
+					
+					//add override entry to base model
+					Predicate predicate = new Predicate();
+					predicate.damaged = 0;
+					predicate.damage = item.getId()/CustomItemManager.MAX_ID;
+					overrides.add(new OverrideEntry(predicate, modelName));
+				}
+				
+				//put all overrides into base model
+				baseModel.overrides = overrides.toArray(new OverrideEntry[]{});
+				//save baseModel
+				File hoeFile = new File(work, "/assets/minecraft/models/item/"+ baseItem.getModelName() +".json");
+				JsonUtils.toFile(hoeFile, baseModel);
 			}
 			
-			//put all overrides into base model
-			hoe.overrides = overrides.toArray(new OverrideEntry[]{});
-			//save base model
-			File hoeFile = new File(work, "/assets/minecraft/models/item/diamond_hoe.json");
-			JsonUtils.toFile(hoeFile, hoe);
+			
 			
 			
 			//copy resource pack.meta and logo.png
