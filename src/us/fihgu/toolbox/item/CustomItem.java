@@ -1,6 +1,7 @@
 package us.fihgu.toolbox.item;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,19 +23,15 @@ public class CustomItem
 {	
 	public DamageableItem baseItem;
 	public String name;
-	public String displayName;
-	public String[] lores;
 	public Model model;
 	
 	private short id;
 	private String registeredName;
 	
-	public CustomItem(DamageableItem baseItem, String name, String displayName, String[] lores, Model model)
+	public CustomItem(DamageableItem baseItem, String name, Model model)
 	{
 		this.baseItem = baseItem;
 		this.name = name;
-		this.displayName = displayName;
-		this.lores = lores;
 		this.model = model;
 	}
 	
@@ -84,11 +81,23 @@ public class CustomItem
 		}
 	}
 	
-	public ItemStack createItemStack()
+	public ItemStack createItemStack(String displayName, List<String> lores)
 	{
 		ItemStack item = new ItemStack(this.baseItem.getMaterial());
-		ItemUtils.setLore(item, this.lores);
-		ItemUtils.setDisplayName(item, this.name);
+		
+		if(lores != null)
+		{
+			ItemUtils.setLore(item, lores);
+		}
+		
+		if(displayName != null)
+		{
+			ItemUtils.setDisplayName(item, displayName);
+		}
+		else
+		{
+			ItemUtils.setDisplayName(item, this.name);
+		}
 		
 		ItemMeta meta = item.getItemMeta();
 		meta.spigot().setUnbreakable(true);
@@ -115,5 +124,31 @@ public class CustomItem
 	public String getRegisteredName()
 	{
 		return this.registeredName;
+	}
+	
+	/**
+	 * checks item unbreakable flag, material type, damage value <br>
+	 * @return true if the itemstack it similar to this CustomItem
+	 */
+	public boolean isSimlair(ItemStack item)
+	{
+		if(item == null)
+		{
+			return false;
+		}
+		
+		if(item.hasItemMeta())
+		{
+			ItemMeta meta = item.getItemMeta();
+			if(meta.spigot().isUnbreakable())
+			{
+				if(item.getType() == this.baseItem.getMaterial() && item.getDurability() == this.id)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }
